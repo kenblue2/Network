@@ -14,7 +14,7 @@ void __cdecl RecvThread (void * p)
 	while(1)
 	{
 		int recvsize = recv(sock,buf,sizeof(buf),0);
-		if(recvsize == 0)
+		if(recvsize <= 0)
 		{
 			printf("접속종료\n");
 			break;
@@ -66,7 +66,7 @@ int main()
 	}
 	printf("클라이언트 접속\n");
 	printf("IP : %s, Port : %d\n",inet_ntoa(clnt_addr.sin_addr),clnt_addr.sin_port);
-	_beginthread(RecvThread,NULL,(void*)clnt_sock);
+	HANDLE hThread = (HANDLE)_beginthread(RecvThread,NULL,(void*)clnt_sock);
 
 	while(1)
 	{
@@ -74,9 +74,11 @@ int main()
 		printf(">> ");
 		gets_s(buf);
 		int sendsize = send(clnt_sock,buf,strlen(buf),0);
-		if(sendsize == 0)
+		if(sendsize <= 0)
 			break;
 	}
+
+	//WaitForSingleObject(hThread, INFINITE);
 
 	closesocket(clnt_sock);
 	closesocket(serv_sock);

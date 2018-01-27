@@ -13,7 +13,7 @@ void __cdecl RecvThread (void * p)
 	while(1)
 	{
 		int recvsize = recv(sock,buf,sizeof(buf),0);
-		if(recvsize == 0)
+		if(recvsize <= 0)
 		{
 			printf("접속종료\n");
 			break;
@@ -47,16 +47,20 @@ int main()
 		printf("connect() Error\n");
 		return 0;
 	}
-	_beginthread(RecvThread,NULL,(void*)serv_sock);
+	
+	HANDLE hThread = (HANDLE)_beginthread(RecvThread,NULL,(void*)serv_sock);
+
 	while(1)
 	{
 		char buf[255] = {0};
 		printf(">> ");
 		gets_s(buf);
 		int sendsize = send(serv_sock,buf,strlen(buf),0);
-		if(sendsize == 0)
+		if(sendsize <= 0)
 			break;
 	}
+
+	//WaitForSingleObject(hThread, INFINITE);
 
 	closesocket(serv_sock);
 	WSACleanup();
