@@ -1,4 +1,7 @@
 /Server/.vs
-/Client/.vs
-/Client/Debug
+/Server/x64
 /Server/Debug
+
+/Client/.vs
+/Client/x64
+/Client/Debug
